@@ -11,6 +11,7 @@ exports.up = function(knex, Promise) {
         .notNullable()
     user
         .string('department')
+        .notNullable()
     user
         .timestamp('createdAt')
         .defaultTo(knex.fn.now())
