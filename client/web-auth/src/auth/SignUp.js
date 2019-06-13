@@ -21,6 +21,7 @@ class SignUp extends React.Component {
     onSubmit = (e) => {
         e.preventDefault()
         this.props.handleSignUp(this.state)
+        this.props.history.push('/users')
     }
 
     render() {

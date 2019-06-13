@@ -1,38 +1,36 @@
 import React from 'react';
-import axios from 'axios';
 
 class UserList extends React.Component {
-  state = {
-    users: [],
-  };
-
-  render() {
-    return (
-      <>
-        <h2>Our Users</h2>
-
-        <ul>
-          {this.state.users.map(u => (
-            <li key={u.id}>{u.username}</li>
-          ))}
-        </ul>
-      </>
-    );
-  }
+    constructor(props) {
+        super(props)
+    }
 
   componentDidMount() {
-    const endpoint = '/users';
-
-    axios
-        .get(endpoint)
-        .then(res => {
-            console.log('users', res.data);
-            this.setState(() => ({ users: res.data }));
-        })
-        .catch(error => {
-            console.log(error)
-        })
+        this.props.getUsers()
     }
+
+  render() {
+    if (!this.props.loggedIn) {
+        return (
+            <div>
+                Please log in to continue.
+            </div>
+        )
+    }
+    else {
+        return (
+        <>
+            <h2>Our Users</h2>
+
+            <div>
+            {this.props.users.map(user => (
+                <div key={user.id}>{user.username}</div>
+            ))}
+            </div>
+        </>
+        );
+    }
+  }
 }
 
 export default UserList;

@@ -1,22 +1,76 @@
 import React from 'react';
+import axios from 'axios';
 import Login from './auth/Login'
 import SignUp from './auth/SignUp'
 import Users from './users/Users'
+import './auth/addInterceptors';
+
 import { BrowserRouter as Router, withRouter, Route } from 'react-router-dom'
 import './App.css';
 
 class App extends React.Component {
+  state = {
+    loggedIn: localStorage.getItem("jwt") === null ? false : true,
+    loggingIn: false,
+    fetchingData: false,
+    users: [],
+  }
+
+  getUsers = () => {
+    this.setState({fetchingData: true})
+    const endpoint = 'http://localhost:5000/api/users';
+
+    axios
+        .get(endpoint)
+        .then(res => {
+            console.log('users', res.data);
+            // this.setState({users: res.data})
+            this.setState(() => ({ users: res.data }));
+
+            this.setState({fetchingData: false})
+        })
+        .catch(error => {
+            console.log(error)
+        })
+  }
 
   handleLogin = user => {
-    console.log('logged in', user)
+    this.setState({loggingIn: true})
+    const endpoint = 'http://localhost:5000/api/auth/login';
+    axios
+      .post(endpoint, user)
+      .then(res => {
+        this.setState({loggingIn: false, loggedIn: true})
+        localStorage.setItem('jwt', res.data.token);
+        console.log('response', res)
+        this.getUsers()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleSignUp = user => {
-    console.log('signed up', user)
+    this.setState({loggingIn: true})
+    const endpoint = 'http://localhost:5000/api/auth/register';
+    axios
+      .post(endpoint, user)
+      .then(res => {
+        this.setState({loggingIn: false, loggedIn: true})
+        localStorage.setItem('jwt', res.data.token);
+        console.log('response', res)
+        this.getUsers()
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleLogout = () => {
     console.log('signed out!')
+    localStorage.removeItem('jwt');
+    this.setState({loggedIn: false})
+    this.props.history.push('/login')
   }
 
   render() {
@@ -25,10 +79,9 @@ class App extends React.Component {
         <div className="App">
           <h1>Hi</h1>
           <nav>
-            whatever
+            <button onClick={this.handleLogout}>Logout</button>
           </nav>
           <main>
-            {/* <Route path="/login" component={Login} handleLogin={this.handleLogin} /> */}
             <Route path='/login'
               render={props => (
                 <Login {...props}
@@ -46,6 +99,10 @@ class App extends React.Component {
             <Route path='/users'
             render={props => (
               <Users {...props}
+              getUsers={this.getUsers}
+              users={this.state.users}
+              fetchingData={this.state.fetchingData}
+              loggedIn={this.state.loggedIn}
               />
             )}
             />
