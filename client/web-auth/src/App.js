@@ -3,6 +3,7 @@ import axios from 'axios';
 import Login from './auth/Login'
 import SignUp from './auth/SignUp'
 import Users from './users/Users'
+import Nav from './nav/Nav'
 import './auth/addInterceptors';
 
 import { BrowserRouter as Router, withRouter, Route } from 'react-router-dom'
@@ -67,10 +68,7 @@ class App extends React.Component {
   }
 
   handleLogout = () => {
-    console.log('signed out!')
-    localStorage.removeItem('jwt');
     this.setState({loggedIn: false})
-    this.props.history.push('/login')
   }
 
   render() {
@@ -78,9 +76,7 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <h1>Hi</h1>
-          <nav>
-            <button onClick={this.handleLogout}>Logout</button>
-          </nav>
+          <Nav loggedIn={this.state.loggedIn} handleLogout={this.handleLogout} />
           <main>
             <Route path='/login'
               render={props => (
