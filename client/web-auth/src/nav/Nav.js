@@ -10,7 +10,7 @@ class Nav extends React.Component {
         console.log('signed out!')
         localStorage.removeItem('jwt');
         this.props.handleLogout()
-        this.props.history.push('/login')
+        this.props.history.push('/signin')
     }
 
     render () {

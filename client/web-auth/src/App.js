@@ -78,7 +78,7 @@ class App extends React.Component {
           <h1>Hi</h1>
           <Nav loggedIn={this.state.loggedIn} handleLogout={this.handleLogout} />
           <main>
-            <Route path='/login'
+            <Route path='/signin'
               render={props => (
                 <Login {...props}
                 handleLogin={this.handleLogin}
